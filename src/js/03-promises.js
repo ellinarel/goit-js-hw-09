@@ -27,6 +27,7 @@ const amount = Number(form.amount.value);
     const Promdelay = delay + (i - 1) * step;
     createPromise(position, Promdelay)
       .then(({ position, delay }) => {
+        position + 1;
         Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`
         );
       })

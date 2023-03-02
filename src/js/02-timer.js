@@ -14,15 +14,14 @@ const refs = {
 refs.startBtn.disabled = true;
 let endDate = null;
 
+
 flatpickr(refs.timePicker, {
         enableTime: true,
         time_24hr: true,
         defaultDate: new Date(),
         minuteIncrement: 1,
-        onClose(selectedDates) {
-            const selectedDate = selectedDates[0];
-    
-            if (selectedDate.getTime() < new Date().getTime()) {
+        onClose([selectedDate]) {
+            if (selectedDate.getTime() <  Date.now()) {
       Notiflix.Report.failure(`Please choose a date in the future`);
       refs.startBtn.disabled = true;
       return;
@@ -40,12 +39,13 @@ function onсlick() {
     const resultTime = selectDate();
     if (resultTime <= 0) {
       clearInterval(timer);
-      refs.daysEl.textContent = '00';
-      refs.hoursEl.textContent = '00';
-      refs.minutesEl.textContent = '00';
-      refs.secondsEl.textContent = '00';
+      //refs.daysEl.textContent = '00';
+      //refs.hoursEl.textContent = '00';
+      //refs.minutesEl.textContent = '00';
+      //refs.secondsEl.textContent = '00';
       return;
     }
+   
     const datatimeComponents = convertMs(resultTime);
     return clockInterface(datatimeComponents);
   }, 1000);
@@ -62,18 +62,22 @@ function convertMs(ms) {
   const minute = second * 60;
   const hour = minute * 60;
   const day = hour * 24;
-  const days = Math.floor(ms / day);
-  const hours = Math.floor((ms % day) / hour);
-  const minutes = Math.floor(((ms % day) % hour) / minute);
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const days = addLeadingZero(Math.floor(ms / day));
+  const hours = addLeadingZero(Math.floor((ms % day) / hour));
+  const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
+  const seconds =addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
+  
+  
   return { days, hours, minutes, seconds };
 }
 
-function clockInterface({ days, hours, minutes, seconds }) {
+function clockInterface({ days = '00', hours = '00', minutes = '00', seconds = '00' }) {
+ 
   refs.daysEl.textContent = days;
   refs.hoursEl.textContent = hours;
   refs.minutesEl.textContent = minutes;
   refs.secondsEl.textContent = seconds;
+  
 }
 
 function addLeadingZero(value) {
